@@ -228,7 +228,7 @@ class _TasksScreenState extends State<TasksScreen> {
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: task.statusColor.withOpacity(0.25)),
+        border: Border.all(color: task.statusColor.withValues(alpha: 0.25)),
         boxShadow: [
           BoxShadow(
             color: Colors.black12,
@@ -259,7 +259,7 @@ class _TasksScreenState extends State<TasksScreen> {
                   vertical: 6,
                 ),
                 decoration: BoxDecoration(
-                  color: task.statusColor.withOpacity(0.15),
+                  color: task.statusColor.withValues(alpha: 0.15),
                   borderRadius: BorderRadius.circular(20),
                 ),
                 child: Text(

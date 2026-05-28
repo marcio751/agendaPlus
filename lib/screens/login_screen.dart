@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'register_screen.dart';
 import 'tasks_screen.dart';
-import '../services/auth_storage.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -15,7 +14,6 @@ class _LoginScreenState extends State<LoginScreen> {
   final _passwordController = TextEditingController();
 
   bool _hidePassword = true;
-  bool _isLoading = false;
 
   @override
   void dispose() {
@@ -24,64 +22,14 @@ class _LoginScreenState extends State<LoginScreen> {
     super.dispose();
   }
 
-  void _handleLogin() async {
-    final loginKey = _emailController.text.trim();
-    final password = _passwordController.text;
-
-    if (loginKey.isEmpty || password.isEmpty) {
-      _showErrorMessage('Preencha todos os campos');
-      return;
-    }
-
-    if (!AuthStorage.hasAccount()) {
-      _showErrorMessage('Nenhuma conta cadastrada');
-      return;
-    }
-
-    setState(() {
-      _isLoading = true;
-    });
-
-    final success = AuthStorage.verify(loginKey, password);
-
-    if (mounted) {
-      if (success) {
-        _showSuccessMessage('Login realizado com sucesso!');
-        Future.delayed(const Duration(milliseconds: 500), () {
-          if (mounted) {
-            Navigator.pushReplacement(
-              context,
-              MaterialPageRoute(builder: (context) => const TasksScreen()),
-            );
-          }
-        });
-      } else {
-        _showErrorMessage('Email ou senha incorretos');
-      }
-
-      setState(() {
-        _isLoading = false;
-      });
-    }
-  }
-
-  void _showErrorMessage(String message) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(message),
-        backgroundColor: Colors.red,
-        duration: const Duration(seconds: 3),
-      ),
-    );
-  }
-
-  void _showSuccessMessage(String message) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(message),
-        backgroundColor: Colors.green,
-        duration: const Duration(seconds: 2),
-      ),
+  void _handleLogin() {
+    // TODO: Implementar lógica de login
+    print('Email: ${_emailController.text}');
+    print('Senha: ${_passwordController.text}');
+    
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(builder: (context) => const TasksScreen()),
     );
   }
 
@@ -98,18 +46,10 @@ class _LoginScreenState extends State<LoginScreen> {
             children: [
               const SizedBox(height: 80),
               // Logo/Icon - Clipboard com checkmarks
-              Container(
+              Image.asset(
+                'assets/images/app_logo.png',
                 width: 120,
                 height: 120,
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  border: Border.all(color: const Color(0xFF2D7D3A), width: 3),
-                ),
-                child: const Icon(
-                  Icons.checklist,
-                  size: 60,
-                  color: Color(0xFF2D7D3A),
-                ),
               ),
               const SizedBox(height: 30),
               // Título
@@ -146,7 +86,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     controller: _emailController,
                     keyboardType: TextInputType.emailAddress,
                     decoration: InputDecoration(
-                      hintText: 'Digite seu email ou nome de usuário',
+                      hintText: 'Digite seu email',
                       prefixIcon: const Icon(Icons.email, color: Colors.grey),
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(8),
@@ -197,7 +137,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     controller: _passwordController,
                     obscureText: _hidePassword,
                     decoration: InputDecoration(
-                      hintText: 'Digite sua senha (min 6 caracteres)',
+                      hintText: 'Digite sua senha',
                       prefixIcon: const Icon(Icons.lock, color: Colors.grey),
                       suffixIcon: IconButton(
                         icon: Icon(
@@ -248,7 +188,7 @@ class _LoginScreenState extends State<LoginScreen> {
               SizedBox(
                 width: double.infinity,
                 child: ElevatedButton(
-                  onPressed: _isLoading ? null : _handleLogin,
+                  onPressed: _handleLogin,
                   style: ElevatedButton.styleFrom(
                     backgroundColor: const Color(0xFF2D7D3A),
                     padding: const EdgeInsets.symmetric(vertical: 16),
@@ -256,25 +196,14 @@ class _LoginScreenState extends State<LoginScreen> {
                       borderRadius: BorderRadius.circular(8),
                     ),
                   ),
-                  child: _isLoading
-                      ? const SizedBox(
-                          height: 20,
-                          width: 20,
-                          child: CircularProgressIndicator(
-                            valueColor: AlwaysStoppedAnimation<Color>(
-                              Colors.white,
-                            ),
-                            strokeWidth: 2,
-                          ),
-                        )
-                      : const Text(
-                          'Entrar',
-                          style: TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.w600,
-                            color: Colors.white,
-                          ),
-                        ),
+                  child: const Text(
+                    'Entrar',
+                    style: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w600,
+                      color: Colors.white,
+                    ),
+                  ),
                 ),
               ),
               const SizedBox(height: 24),

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../services/auth_storage.dart';
+import 'tasks_screen.dart';
 
 class RegisterScreen extends StatefulWidget {
   const RegisterScreen({super.key});
@@ -16,7 +16,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
   bool _hidePassword = true;
   bool _hideConfirmPassword = true;
-  bool _isLoading = false;
 
   @override
   void dispose() {
@@ -27,90 +26,15 @@ class _RegisterScreenState extends State<RegisterScreen> {
     super.dispose();
   }
 
-  void _handleRegister() async {
-    final name = _nameController.text.trim();
-    final email = _emailController.text.trim();
-    final password = _passwordController.text;
-    final confirmPassword = _confirmPasswordController.text;
-
-    // Validar campos vazios
-    if (name.isEmpty || email.isEmpty || password.isEmpty || confirmPassword.isEmpty) {
-      _showErrorMessage('Preencha todos os campos');
-      return;
-    }
-
-    // Validar email
-    if (!email.contains('@')) {
-      _showErrorMessage('Email inválido');
-      return;
-    }
-
-    // Validar senhas
-    if (password.length < 6) {
-      _showErrorMessage('Senha deve ter no mínimo 6 caracteres');
-      return;
-    }
-
-    if (password != confirmPassword) {
-      _showErrorMessage('As senhas não correspondem');
-      return;
-    }
-
-    if (AuthStorage.hasAccount()) {
-      _showErrorMessage('Já existe uma conta cadastrada');
-      return;
-    }
-
-    setState(() {
-      _isLoading = true;
-    });
-
-    final success = AuthStorage.register(name, email, password);
-
-    if (success) {
-      if (mounted) {
-        _showSuccessMessage('Cadastro realizado com sucesso!');
-        _nameController.clear();
-        _emailController.clear();
-        _passwordController.clear();
-        _confirmPasswordController.clear();
-
-        Future.delayed(const Duration(seconds: 1), () {
-          if (mounted) {
-            Navigator.pop(context);
-          }
-        });
-      }
-    } else {
-      if (mounted) {
-        _showErrorMessage('Erro ao criar conta');
-      }
-    }
-
-    if (mounted) {
-      setState(() {
-        _isLoading = false;
-      });
-    }
-  }
-
-  void _showErrorMessage(String message) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(message),
-        backgroundColor: Colors.red,
-        duration: const Duration(seconds: 3),
-      ),
-    );
-  }
-
-  void _showSuccessMessage(String message) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(message),
-        backgroundColor: Colors.green,
-        duration: const Duration(seconds: 2),
-      ),
+  void _handleRegister() {
+    // TODO: Implementar lógica de cadastro
+    print('Nome: ${_nameController.text}');
+    print('Email: ${_emailController.text}');
+    print('Senha: ${_passwordController.text}');
+    
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(builder: (context) => const TasksScreen()),
     );
   }
 
@@ -391,7 +315,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
               SizedBox(
                 width: double.infinity,
                 child: ElevatedButton(
-                  onPressed: _isLoading ? null : _handleRegister,
+                  onPressed: _handleRegister,
                   style: ElevatedButton.styleFrom(
                     backgroundColor: const Color(0xFF2D7D3A),
                     padding: const EdgeInsets.symmetric(vertical: 16),
@@ -399,25 +323,14 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       borderRadius: BorderRadius.circular(8),
                     ),
                   ),
-                  child: _isLoading
-                      ? const SizedBox(
-                          height: 20,
-                          width: 20,
-                          child: CircularProgressIndicator(
-                            valueColor: AlwaysStoppedAnimation<Color>(
-                              Colors.white,
-                            ),
-                            strokeWidth: 2,
-                          ),
-                        )
-                      : const Text(
-                          'Cadastrar',
-                          style: TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.w600,
-                            color: Colors.white,
-                          ),
-                        ),
+                  child: const Text(
+                    'Cadastrar',
+                    style: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w600,
+                      color: Colors.white,
+                    ),
+                  ),
                 ),
               ),
               const SizedBox(height: 24),

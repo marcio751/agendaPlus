@@ -4,6 +4,7 @@ enum TaskStatus { pending, almostDue, overdue, completed }
 
 class Task {
   Task({
+    this.id,
     required this.title,
     required this.description,
     this.date,
@@ -11,6 +12,7 @@ class Task {
     this.completed = false,
   });
 
+  final int? id;
   final String title;
   final String description;
   final DateTime? date;
@@ -66,5 +68,47 @@ class Task {
       case TaskStatus.pending:
         return const Color(0xFFF1C40F);
     }
+  }
+
+  Map<String, dynamic> toMap() {
+    return {
+      if (id != null) 'id': id,
+      'title': title,
+      'description': description,
+      'date': date?.millisecondsSinceEpoch,
+      'time': time != null ? time!.hour * 60 + time!.minute : null,
+      'completed': completed ? 1 : 0,
+    };
+  }
+
+  Task copyWith({
+    int? id,
+    String? title,
+    String? description,
+    DateTime? date,
+    TimeOfDay? time,
+    bool? completed,
+  }) {
+    return Task(
+      id: id ?? this.id,
+      title: title ?? this.title,
+      description: description ?? this.description,
+      date: date ?? this.date,
+      time: time ?? this.time,
+      completed: completed ?? this.completed,
+    );
+  }
+
+  factory Task.fromMap(Map<String, dynamic> map) {
+    final dateVal = map['date'];
+    final timeVal = map['time'];
+    return Task(
+      id: map['id'] as int?,
+      title: map['title'] ?? '',
+      description: map['description'] ?? '',
+      date: dateVal != null ? DateTime.fromMillisecondsSinceEpoch(dateVal as int) : null,
+      time: timeVal != null ? TimeOfDay(hour: (timeVal as int) ~/ 60, minute: (timeVal) % 60) : null,
+      completed: (map['completed'] ?? 0) == 1,
+    );
   }
 }
